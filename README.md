@@ -35,7 +35,6 @@ Compile the target invariant. The `Dockerfile` separates dependency caching from
 docker build --no-cache --progress=plain -t alexsmail-dns-fix-i .
 ```
 
-
 ### 2. Thermodynamic Start (Execution Bridge)
 Execute the container with explicit Direct Memory Access (DMA) bridges for network and storage. 
 
