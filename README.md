@@ -19,6 +19,7 @@ The project adheres to a strict Maven-like `src/` layout to prevent `[SPLIT-BRAI
         └── dns_fix.py     # Bare-metal execution logic ([OR])
 ```
 
+
 ## [HARDWARE INITIALIZATION]
 Before initiating the runtime, the GCP Root-key must be physically allocated for OAuth2 authorization.
 
