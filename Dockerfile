@@ -14,29 +14,59 @@ WORKDIR /app
 #[HARDWARE_BRIDGE]: Injecting UV compiler directly from authorized registry
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-#[RUNTIME_ENVIRONMENT]: Fetching TLS certificates and Target Python Architecture
+#[RUNTIME_ENVIRONMENT]: Fetching TLS certificates and nano and Target Python Architecture
 RUN set -ex && \
     apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates && \
+    apt-get install -y --no-install-recommends ca-certificates nano && \
+    echo 'set syntax "none"' >> /etc/nanorc && \
     rm -rf /var/lib/apt/lists/*
-
+	
 #[AOT_PYTHON_ALLOCATION]: Hardcoded request for target Python runtime
 RUN set -ex && \
     uv python install 3.13.3
 
-#[DEPENDENCY_INJECTION]: Lock and sync macro-graph
-COPY pyproject.toml .
-# Resolving and allocating dependencies via UV (creates isolated .venv automatically)
+#[DEPENDENCY_INJECTION]: Lock and sync macro-graph dependencies ONLY
+# The wildcard uv.lock* ensures absolute determinism if the lockfile exists
+COPY pyproject.toml uv.lock* ./
+# Flag --no-install-project prevents hatchling from looking for src/ prematurely
+RUN set -ex && \
+    uv sync --no-install-project
+
+#[AST_COPY]: Transferring local execution logic to target runtime
+# Strict src-layout allocation to prevent macro-entropy leakage
+COPY src/ src/
+
+#[PROJECT_INJECTION]: Finalize venv by linking the local project
+# This DOES NOT upgrade external dependencies. It only registers src/.
 RUN set -ex && \
     uv sync
 
-#[AST_COPY]: Transferring local execution logic to target runtime
-# The .dockerignore boundary protects this step from macro-entropy
-COPY . .
-
 #[ENTRYPOINT]: Hardware transition function (Execution via UV proxy)
 # Adjust "dns_fix.py" to match the actual entry node of your script
-CMD["uv", "run", "python", "dns_fix.py"]
+#CMD ["tail", "-f", "/dev/null"]
+CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
+
+#docker build --no-cache --progress=plain -t alexsmail-dns-fix-i .
+#docker run -it -p 8080:8080 -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix
+# The --entrypoint /bin/bash flag overrides the default script execution.
+# You get a Linux command line INSIDE the container.
+#docker run -it -p 8080:8080 --entrypoint /bin/bash -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
+#DO IT ONLY TO REGENERATE uv.lock!!!
+#uv lock
+#mv uv.lock .secrets/uv.lock
+
+# ---[PyPI PUBLISHING PIPELINE] ---
+# uv build
+# Allocate token in RAM (Replace YOUR_TOKEN):
+# export UV_PUBLISH_TOKEN="pypi-YOUR_TOKEN"
+# Transmit artifacts to WAN (PyPI):
+# uv publish 
+
+
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.0.1
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
+#docker push alexberkovich/alexsmail-dns-fix:0.0.1
+#docker push alexberkovich/alexsmail-dns-fix:latest
 
 
 # Delete all containers
@@ -75,3 +105,7 @@ CMD["uv", "run", "python", "dns_fix.py"]
 # sudo watch -n 15 "docker stats --no-stream | sudo tee -a docker_stats.log"
 # RAM+SWAP memory
 # watch -n 1 free -h
+
+
+
+
