@@ -1,0 +1,60 @@
+#[DECOHERENCE_BOUNDARY]: Severing the historical macro-graph
+# The container must not inherit the DAG commit graph and external CI state machines
+.git/
+.gitignore
+.github/
+
+#[ANTI_VIRUS_SIGNATURE]: Compiled macro-entropy of Host OS
+# Byte-code must be strictly AOT-compiled inside the container (Target Architecture)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# [OVERFITTING_PANIC_PREVENTION]: Isolation of local environments
+# Merging Host VENV with Container OS triggers Kernel Panic
+.env
+.env.*
+.venv*
+venv*
+env/
+ENV/
+virtualenv/
+
+# [ROOT_HIJACK_PROTECTION]: Hardware ban on key leakage into Image Layers
+.secrets/
+credentials.json
+*.pem
+
+#[PHANTOM_ENTROPY]: Traces of local I/O topology (IDE / OS)
+.idea/
+.vscode/
+.DS_Store
+*~
+*.swp
+*.swo
+
+#[MACRO_LATENCY_LIMIT]: Local build artifacts (Memory Bloat)
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+*.tar.gz
+
+# [TESTING_PURGE]: Sandboxes and local linters (Hardware Purge for Prod-container)
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# [RUNTIME_STATE_DUMP]: Frozen states and local databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+.ipynb_checkpoints
+
+#[COMPILER_ISOLATION]: Preventing compiler instructions from leaking into the binary substrate
+Dockerfile
