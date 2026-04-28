@@ -32,14 +32,22 @@ Before initiating the runtime, the GCP Root-key must be physically allocated for
 
 ## [RUNTIME EXECUTION (THE BIRUR PIPELINE)]
 
-### 1. Absolute State Zero Build
+### 1. Stateless birur daemon
+
+To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor.
+
+```bash
+docker run --rm -v "$(pwd):/app" -w /app python:3.13-slim sh -c "pip install uv --no-cache-dir --disable-pip-version-check --root-user-action=ignore && uv lock"
+```
+
+### 2. Absolute State Zero Build
 Compile the target invariant. The `Dockerfile` separates dependency caching from the source code.
 
 ```bash
 docker build --no-cache --progress=plain -t alexsmail-dns-fix-i .
 ```
 
-### 2. Thermodynamic Start (Execution Bridge)
+### 3. Thermodynamic Start (Execution Bridge)
 Execute the container with explicit Direct Memory Access (DMA) bridges for network and storage. 
 
 ```bash
