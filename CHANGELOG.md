@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2028-04-28
+
+### Added
+
+- Documenation added https://alex-ber.medium.com/from-naive-scripts-to-hardware-evasion-cleaning-dead-links-and-bypassing-rate-limits-10ab5611d95a
+
+### Fixed
+- __version__ = "0.1.1" into __init_.py for dynamic version resolution in __init_.py
+- Hardenning dependencies to minimize chance of breaking Google's API.
+
 ## [0.0.1] - 2026-04-27
 
 ### Added

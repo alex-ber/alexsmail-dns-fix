@@ -29,7 +29,11 @@ RUN set -ex && \
 # The wildcard uv.lock* ensures absolute determinism if the lockfile exists
 COPY pyproject.toml uv.lock* ./
 # Flag --no-install-project prevents hatchling from looking for src/ prematurely
+
+#[POINTER_ALLOCATION]: Synthetic Mock-node to satisfy hatchling dynamic version parser
 RUN set -ex && \
+    mkdir -p src/alexsmail_dns_fix && \
+    echo '__version__ = "0.1.1"' > src/alexsmail_dns_fix/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Transferring local execution logic to target runtime
@@ -47,7 +51,7 @@ RUN set -ex && \
 CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 
 #docker build --no-cache --progress=plain -t alexsmail-dns-fix-i .
-#docker run -it -p 8080:8080 -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix
+#docker run -it -p 8080:8080 -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
 # The --entrypoint /bin/bash flag overrides the default script execution.
 # You get a Linux command line INSIDE the container.
 #docker run -it -p 8080:8080 --entrypoint /bin/bash -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
@@ -63,9 +67,9 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # uv publish 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.0.1
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.1.1
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.0.1
+#docker push alexberkovich/alexsmail-dns-fix:0.1.1
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 
