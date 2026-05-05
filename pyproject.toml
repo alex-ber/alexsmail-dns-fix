@@ -17,3 +17,7 @@ dependencies =[
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+# [POINTER_ALLOCATION]: Directing the transpiler to the isolated OR
+[tool.hatch.build.targets.wheel]
+packages =["src/alexsmail_dns_fix"]
