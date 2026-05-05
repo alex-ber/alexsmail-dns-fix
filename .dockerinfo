@@ -1,18 +1,21 @@
-#[DECOHERENCE_BOUNDARY]: Severing the historical macro-graph
-# The container must not inherit the DAG commit graph and external CI state machines
-.git/
+# ----------------------------------
+# Git / CI (never in image)
+# ----------------------------------
+.git
 .gitignore
-.github/
+.github
 
-#[ANTI_VIRUS_SIGNATURE]: Compiled macro-entropy of Host OS
-# Byte-code must be strictly AOT-compiled inside the container (Target Architecture)
+# ----------------------------------
+# Python artifacts
+# ----------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 
-# [OVERFITTING_PANIC_PREVENTION]: Isolation of local environments
-# Merging Host VENV with Container OS triggers Kernel Panic
+# ----------------------------------
+# Environments (must NOT leak)
+# ----------------------------------
 .env
 .env.*
 .venv*
@@ -21,12 +24,16 @@ env/
 ENV/
 virtualenv/
 
-# [ROOT_HIJACK_PROTECTION]: Hardware ban on key leakage into Image Layers
+# ----------------------------------
+# Secrets (CRITICAL)
+# ----------------------------------
 .secrets/
 credentials.json
 *.pem
 
-#[PHANTOM_ENTROPY]: Traces of local I/O topology (IDE / OS)
+# ----------------------------------
+# IDE / OS
+# ----------------------------------
 .idea/
 .vscode/
 .DS_Store
@@ -34,7 +41,9 @@ credentials.json
 *.swp
 *.swo
 
-#[MACRO_LATENCY_LIMIT]: Local build artifacts (Memory Bloat)
+# ----------------------------------
+# Build artifacts
+# ----------------------------------
 build/
 dist/
 *.egg-info/
@@ -42,19 +51,30 @@ dist/
 *.whl
 *.tar.gz
 
-# [TESTING_PURGE]: Sandboxes and local linters (Hardware Purge for Prod-container)
+# ----------------------------------
+# Test artifacts
+# ----------------------------------
 .pytest_cache/
 .mypy_cache/
 .coverage
 htmlcov/
 .tox/
 
-# [RUNTIME_STATE_DUMP]: Frozen states and local databases
+# ----------------------------------
+# Runtime / data
+# ----------------------------------
 *.log
 *.sqlite
 *.sqlite3
 *.db
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
-#[COMPILER_ISOLATION]: Preventing compiler instructions from leaking into the binary substrate
-Dockerfile
+# ----------------------------------
+# Optional: exclude docs if not needed in image
+# ----------------------------------
+docs/
+
+# ----------------------------------
+# Keep Dockerfile
+# ----------------------------------
+!Dockerfile

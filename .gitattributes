@@ -1,3 +1,44 @@
-"* text=auto eol=lf" 
-*.{cmd,[cC][mM][dD]} text eol=crlf
-*.{bat,[bB][aA][tT]} text eol=crlf
+# ----------------------------------
+# Default: normalize to LF (Linux/Docker safe)
+# ----------------------------------
+* text=auto eol=lf
+
+# ----------------------------------
+# Windows scripts (CRLF required)
+# ----------------------------------
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# ----------------------------------
+# Shell scripts (LF only)
+# ----------------------------------
+*.sh text eol=lf
+
+# ----------------------------------
+# Explicit text formats
+# ----------------------------------
+*.py   text eol=lf
+*.md   text eol=lf
+*.toml text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+
+# ----------------------------------
+# Binary (never touch)
+# ----------------------------------
+*.exe binary
+*.dll binary
+*.so  binary
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+
+*.zip binary
+*.tar binary
+*.gz  binary
+
+*.sqlite binary
+*.db binary
