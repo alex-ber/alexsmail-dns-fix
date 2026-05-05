@@ -1,64 +1,81 @@
-# [ANTI_VIRUS_SIGNATURE]: Byte-compiled / optimized / DLL files
+# ----------------------------------
+# Python
+# ----------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 
-#[ANTI_VIRUS_SIGNATURE]: Distribution / packaging / Archives
-.Python
+# ----------------------------------
+# Packaging / build
+# ----------------------------------
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
-MANIFEST
-*.tar.gz
 *.whl
+*.tar.gz
 
-#[ANTI_VIRUS_SIGNATURE]: Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+# ----------------------------------
+# Logs
+# ----------------------------------
+*.log
 
-#[ANTI_VIRUS_SIGNATURE]: Environments & Secrets (Root Protection)
+# ----------------------------------
+# Environments (CRITICAL)
+# ----------------------------------
 .env
-.env.*.local
-.env.local
+.env.*
 .venv*
 venv*
 env/
 ENV/
 env.bak/
 virtualenv/
-prof/
-scratch/
-.secrets/
 
-# [ANTI_VIRUS_SIGNATURE]: IDE / OS Topology & Swap RAM
+# ----------------------------------
+# Secrets (CRITICAL)
+# ----------------------------------
+.secrets/
+credentials.json
+*.pem
+*.key
+
+# ----------------------------------
+# IDE / OS noise
+# ----------------------------------
 .idea/
 .vscode/
 .DS_Store
+Thumbs.db
 *~
 *.swp
 *.swo
 
-# [ANTI_VIRUS_SIGNATURE]: Runtime Data, Dumps & Checkpoints
-*.log
+# ----------------------------------
+# Data artifacts
+# ----------------------------------
 *.pkl
 *.bin
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
-#[KELIM_PROTECTION]: Hardware Transition Functions
-# Hardware ban on DROP_PACKET for executable scripts
+# ----------------------------------
+# Testing / tooling
+# ----------------------------------
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ----------------------------------
+# Local scratch
+# ----------------------------------
+prof/
+scratch/
+
+# ----------------------------------
+# Allow scripts explicitly
+# ----------------------------------
 !*.bat
 !*.sh
