@@ -1,0 +1,64 @@
+# [ANTI_VIRUS_SIGNATURE]: Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+#[ANTI_VIRUS_SIGNATURE]: Distribution / packaging / Archives
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.tar.gz
+*.whl
+
+#[ANTI_VIRUS_SIGNATURE]: Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+#[ANTI_VIRUS_SIGNATURE]: Environments & Secrets (Root Protection)
+.env
+.env.*.local
+.env.local
+.venv*
+venv*
+env/
+ENV/
+env.bak/
+virtualenv/
+prof/
+scratch/
+.secrets/
+
+# [ANTI_VIRUS_SIGNATURE]: IDE / OS Topology & Swap RAM
+.idea/
+.vscode/
+.DS_Store
+*~
+*.swp
+*.swo
+
+# [ANTI_VIRUS_SIGNATURE]: Runtime Data, Dumps & Checkpoints
+*.log
+*.pkl
+*.bin
+.ipynb_checkpoints
+
+#[KELIM_PROTECTION]: Hardware Transition Functions
+# Hardware ban on DROP_PACKET for executable scripts
+!*.bat
+!*.sh
