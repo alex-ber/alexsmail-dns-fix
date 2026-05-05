@@ -1,0 +1,19 @@
+# [DEPENDENCY_GRAPH_ALLOCATION]: alexsmail-dns-fix
+# Strict PEP 621 compliance for target environment
+
+[project]
+name = "alexsmail-dns-fix"
+version = "0.1.0"
+description = "DNS Resolution and Fix Runtime"
+requires-python = ">=3.13.3"
+
+# [EXTERNAL_DEPENDENCIES]: Authorized nodes for Google IO
+dependencies =[
+    "google-api-python-client",
+    "google-auth-httplib2",
+    "google-auth-oauthlib"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
