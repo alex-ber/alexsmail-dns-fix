@@ -37,6 +37,7 @@ def _commit_state_pointer(post_id):
     with open(STATE_POINTER_FILE, 'a', encoding='utf-8') as f:
         f.write(f"{post_id}\n")
 
+#see https://alex-ber.medium.com/from-naive-scripts-to-hardware-evasion-cleaning-dead-links-and-bypassing-rate-limits-10ab5611d95a for more details.
 def _execute_with_backoff(api_request, max_retries=6):
     """Exponential backoff to prevent API rate limit exhaustion."""
     retries = 0
@@ -74,6 +75,11 @@ def _get_authenticated_service():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
+            
+            #This code only works when it runs natively on Windows 
+            #flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+            #creds = flow.run_local_server(port=0)
+            
             flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
             
             # [HARDWARE_BRIDGE]: Headless Local Server
