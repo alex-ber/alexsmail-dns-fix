@@ -26,14 +26,14 @@ RUN set -ex && \
     uv python install 3.13.3
 
 #[DEPENDENCY_INJECTION]: Lock and sync macro-graph dependencies ONLY
-# The wildcard uv.lock* ensures absolute determinism if the lockfile exists
-COPY pyproject.toml uv.lock* ./
-# Flag --no-install-project prevents hatchling from looking for src/ prematurely
+# Strict mapping of uv.lock ensures absolute determinism. Omission triggers kernel panic.
+COPY pyproject.toml uv.lock ./
 
 #[POINTER_ALLOCATION]: Synthetic Mock-node to satisfy hatchling dynamic version parser
+# Flag --no-install-project prevents hatchling from looking for src/ prematurely
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.1.1"' > src/alexsmail_dns_fix/__init__.py && \
+    echo '__version__ = "0.2.1"' > src/alexsmail_dns_fix/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Transferring local execution logic to target runtime
@@ -46,18 +46,18 @@ RUN set -ex && \
     uv sync
 
 #[ENTRYPOINT]: Hardware transition function (Execution via UV proxy)
-# Adjust "dns_fix.py" to match the actual entry node of your script
 #CMD ["tail", "-f", "/dev/null"]
 CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
+
+# ---[STATELESS BIRUR DAEMON] ---
+# To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor:
+# docker run --rm -v "$(pwd):/app" -w /app python:3.13-slim sh -c "pip install uv --no-cache-dir --disable-pip-version-check --root-user-action=ignore && uv lock"
 
 #docker build --no-cache --progress=plain -t alexsmail-dns-fix-i .
 #docker run -it -p 8080:8080 -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
 # The --entrypoint /bin/bash flag overrides the default script execution.
 # You get a Linux command line INSIDE the container.
 #docker run -it -p 8080:8080 --entrypoint /bin/bash -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
-#DO IT ONLY TO REGENERATE uv.lock!!!
-#uv lock
-#mv uv.lock .secrets/uv.lock
 
 # ---[PyPI PUBLISHING PIPELINE] ---
 # uv build
@@ -67,9 +67,9 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # uv publish 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.1.1
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.1
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.1.1
+#docker push alexberkovich/alexsmail-dns-fix:0.2.1
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 
