@@ -34,13 +34,14 @@ Before initiating the runtime, the GCP Root-key must be physically allocated for
 
 ## [RUNTIME EXECUTION (THE BIRUR PIPELINE)]
 
-### 1. Stateless birur daemon
+### 1. Stateless birur daemon (Lockfile Generation)
 
-To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor.
+To regenerate the cryptographic invariant (`uv.lock`) WITHOUT mutating the Host OS state (zero allocations on Bare Metal), run the native ephemeral astral/uv hypervisor fused with the Python 3.13 runtime. This satisfies `hatchling`'s requirement to execute Python bytecode for dynamic versioning, eliminating the thermodynamic waste of pip-installing `uv` manually.
 
 ```bash
-docker run --rm -v "$(pwd):/app" -w /app python:3.13-slim sh -c "pip install uv --no-cache-dir --disable-pip-version-check --root-user-action=ignore && uv lock"
+docker run --rm -v "$(pwd):/app" -w /app ghcr.io/astral-sh/uv:python3.13-bookworm-slim uv lock
 ```
+
 
 ### 2. Absolute State Zero Build
 Compile the target invariant. The `Dockerfile` separates dependency caching from the source code.
