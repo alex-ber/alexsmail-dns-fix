@@ -23,15 +23,22 @@ WORKDIR /app
 #[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
 COPY --from=ghcr.io/astral-sh/uv@sha256:3a59a3cdd5f7c217faa36e32dbc7fddbb0412889c2a0a5229f6d790e5a019dd7 /uv /uvx /bin/
 
+
 #[RUNTIME_ENVIRONMENT]: Deterministic APT Projection & Root Python Allocation
-# Hard package pinning. Merged apt allocation and Python compilation into a single FS layer.
+# Hard package pinning for maximum reproducibility.
+# ca-certificates pinned to exact version + hold + preferences to prevent ANY upgrade.
 RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates=20240203 \
-        nano=7.2-2build1 \
+        nano=7.2-2ubuntu0.1 \
     && rm -rf /var/lib/apt/lists/* \
     && apt-mark hold ca-certificates nano \
+    # Extra strict pinning: prevent newer versions even if they appear in repositories
+    && echo 'Package: ca-certificates' > /etc/apt/preferences.d/ca-certificates-pin \
+    && echo 'Pin: version 20240203' >> /etc/apt/preferences.d/ca-certificates-pin \
+    && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/ca-certificates-pin \
+    && update-ca-certificates --fresh \
     && echo 'set syntax "none"' >> /etc/nanorc && \
     uv python install 3.13.3
 
@@ -42,7 +49,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.2.1"' > src/alexsmail_dns_fix/__init__.py && \
+    echo '__version__ = "0.2.2"' > src/alexsmail_dns_fix/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -75,9 +82,9 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # uv publish 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.1
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.2
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.2.1
+#docker push alexberkovich/alexsmail-dns-fix:0.2.2
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 
