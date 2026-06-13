@@ -81,6 +81,7 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # Transmit artifacts to WAN (PyPI):
 # uv publish 
 
+#mise use uv@0.11.17
 #sudo -E env PATH="$PATH" uv
 #uv cache dir #~/.cache/uv
 #uv cache clean #completely wipe out cache
