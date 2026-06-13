@@ -81,6 +81,16 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # Transmit artifacts to WAN (PyPI):
 # uv publish 
 
+#sudo -E env PATH="$PATH" uv
+#uv cache dir #~/.cache/uv
+#uv cache clean #completely wipe out cache
+#uv cache prune #outdated
+#uv cache clean numpy #If you suspect a specific package is corrupted or you wa>
+#uv sync
+#uv run python -m src.alexsmail_dns_fix.dns_fix
+
+
+
 
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.2
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
