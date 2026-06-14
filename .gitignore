@@ -46,6 +46,7 @@ credentials.json
 # ----------------------------------
 .idea/
 .vscode/
+.kdev4
 .DS_Store
 Thumbs.db
 *~
