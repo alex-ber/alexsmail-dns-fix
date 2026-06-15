@@ -2,7 +2,7 @@
 # Absolute Phase Lock. Pointer tags (e.g., :24.04) are PROHIBITED.
 # docker pull ubuntu:24.04
 # docker inspect --format='{{index .RepoDigests 0}}' ubuntu:24.04
-# docker run --rm ubuntu:24.04 sh -c "apt-get update -qq && apt-cache policy ca-certificates nano"
+# docker run --rm ubuntu:24.04 sh -c "apt-get update -qq && apt-cache policy ca-certificates"
 # Retrieve the current pointer for UV:
 # docker pull ghcr.io/astral-sh/uv:latest
 # docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/astral-sh/uv:latest
@@ -50,7 +50,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.2.3"' > src/alexsmail_dns_fix/__init__.py && \
+    echo '__version__ = "0.2.4"' > src/alexsmail_dns_fix/__init__.py && \
     uv sync --no-install-project && \
     chmod -R 777 /app/.venv && \
     chmod -R 755 /opt/python
@@ -100,9 +100,9 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.3
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.4
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.2.3
+#docker push alexberkovich/alexsmail-dns-fix:0.2.4
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 
