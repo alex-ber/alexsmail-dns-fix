@@ -32,6 +32,7 @@ env/
 ENV/
 env.bak/
 virtualenv/
+node_modules/
 
 # ----------------------------------
 # Secrets (CRITICAL)
@@ -80,3 +81,5 @@ scratch/
 # ----------------------------------
 !*.bat
 !*.sh
+
+
