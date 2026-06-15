@@ -6,7 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    # Using the module name from your Dockerfile
     container_name: alexsmail-dns-fix
 
     # Policies: no, on-failure:5, unless-stopped, always
@@ -101,6 +100,11 @@ services:
 #docker compose config
 #docker compose exec alexsmail-dns-fix bash
 #docker compose ps
-#docker compose logs --tail=120 alexsmail-dns-fix
-#docker compose logs alexsmail-dns-fix | grep -E 'ChromaDB|MemoryVectorStore|DEGRADED'
+#See all logs
+#docker compose logs -f
+#docker compose logs --tail=120 app
+#docker compose logs app | grep -E 'ChromaDB|MemoryVectorStore|DEGRADED'
+#Direct way without compose
+#docker logs --tail=120 alexsmail-dns-fix
+#docker logs alexsmail-dns-fix | grep -E 'ChromaDB|MemoryVectorStore|DEGRADED'
 
