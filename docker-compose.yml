@@ -1,0 +1,106 @@
+services:
+  app:
+    image: alexsmail-dns-fix-i
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Using the module name from your Dockerfile
+    container_name: alexsmail-dns-fix
+
+    # Policies: no, on-failure:5, unless-stopped, always
+    restart: no
+
+    # ---------------------------------------------------------
+    # SERVICE HEALTH & DEPENDENCIES (Commented out templates)
+    # ---------------------------------------------------------
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+    #   start_period: 5s # Give the app time to start before the first check
+    #   interval: 30s    # How often to check
+    #   timeout: 10s     # How long to wait for a response
+    #   retries: 3       # How many consecutive failures to become unhealthy
+
+    # depends_on:
+    #   postgres_db:
+    #     condition: service_healthy
+
+    # ---------------------------------------------------------
+    # LOGGING
+    # Docker only supports size/count rotation natively.
+    # For daily rotation (e.g., 10 days), implement TimedRotatingFileHandler in Python.
+
+    #all_file_handler:
+    #    class: logging.handlers.TimedRotatingFileHandler
+    #    level: DEBUG
+    #    formatter: detail
+    #    filename: 'logs/alexsmail-dns-fix.log'
+    #    when: midnight
+    #    backupCount: 10
+    #    delay: True
+
+    # ---------------------------------------------------------
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m" # Max 100 megabytes per file
+        max-file: "10"   # Keep 10 files max, delete older ones
+
+
+    # ---------------------------------------------------------
+    # HARDWARE BRIDGE: Identity mapping
+    # Maps the internal container user to your bare-metal user.
+    # Reads HOST_UID/HOST_GID from .env, falling back to 1000:1000.
+    # Guarantees that files created by the container (e.g., logs, caches)
+    # belong to the host user, preventing permission errors in Kate.
+    # ---------------------------------------------------------
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+
+    # Emulation of -i and -t flags from the "docker run -it" command
+    # This preserves colored output in logs and proper terminal formatting
+    stdin_open: true
+    tty: true
+
+    environment:
+      # Ensure Python prints directly to the terminal without buffering
+      - PYTHONUNBUFFERED=1
+      # Disable bytecode generation at runtime to prevent root-owned .pyc files
+      # from polluting the host filesystem (since they were already compiled AOT)
+      - PYTHONDONTWRITEBYTECODE=1
+      # Tell UV to use /tmp for caching, as it's writable by any user
+      - UV_CACHE_DIR=/tmp/.uv-cache
+
+    volumes:
+      # Transparent mount: Map the bare-metal path directly into the container's WORKDIR.
+      # Because your Dockerfile uses "WORKDIR /app", we map it directly there.
+      - .:/app
+
+      # Anonymous volume for the Python virtual environment.
+      # Protects the container's isolated .venv (built by UV) from being
+      # overwritten by the host's bare-metal .venv.
+      - /app/.venv
+
+      # Optional: If your app writes local logs or state files, you can map them securely:
+      # - ./logs:/app/logs
+
+    # The CMD is already perfectly defined in your Dockerfile:
+    # CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
+    # So we don't need to override the `command` here unless you want a specific dev-mode execution.
+
+
+
+#docker compose build --no-cache --progress=plain
+#docker compose up
+##docker compose up -d
+#docker compose down -v
+#docker logs -f alexsmail-dns-fix
+
+#Useful checks.
+
+#docker compose config
+#docker compose exec alexsmail-dns-fix bash
+#docker compose ps
+#docker compose logs --tail=120 alexsmail-dns-fix
+#docker compose logs alexsmail-dns-fix | grep -E 'ChromaDB|MemoryVectorStore|DEGRADED'
+

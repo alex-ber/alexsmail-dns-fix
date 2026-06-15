@@ -16,7 +16,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy
+    UV_LINK_MODE=copy \
+    UV_PYTHON_INSTALL_DIR=/opt/python
 
 WORKDIR /app
 
@@ -31,7 +32,7 @@ RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates=20240203 \
-        nano=7.2-2ubuntu0.1 \
+        nano \
     && rm -rf /var/lib/apt/lists/* \
     && apt-mark hold ca-certificates nano \
     # Extra strict pinning: prevent newer versions even if they appear in repositories
@@ -49,21 +50,27 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.2.2"' > src/alexsmail_dns_fix/__init__.py && \
-    uv sync --no-install-project
+    echo '__version__ = "0.2.3"' > src/alexsmail_dns_fix/__init__.py && \
+    uv sync --no-install-project && \
+    chmod -R 777 /app/.venv && \
+    chmod -R 755 /opt/python
 
 #[AST_COPY]: Mount Root Logic
 COPY src/ src/
 
 #[PROJECT_INJECTION]: Finalize Symbol Table Linkage
 RUN set -ex && \
-    uv sync
+    uv sync && \
+    chmod -R 777 /app/.venv && \
+    chmod -R 755 /opt/python
 
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
 CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 
 
-
+#mise prune
+#mise install
+#mise use uv@0.11.17
 # ---[STATELESS BIRUR DAEMON] ---
 # To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor:
 # docker run --rm -v "$(pwd):/app" -w /app ghcr.io/astral-sh/uv:python3.13-bookworm-slim uv lock
@@ -81,9 +88,7 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # Transmit artifacts to WAN (PyPI):
 # uv publish 
 
-#mise prune
-#mise install
-#mise use uv@0.11.17
+
 #sudo -E env PATH="$PATH" uv
 #uv cache dir #~/.cache/uv
 #uv cache clean #completely wipe out cache
@@ -95,9 +100,9 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.2
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.3
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.2.2
+#docker push alexberkovich/alexsmail-dns-fix:0.2.3
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 
