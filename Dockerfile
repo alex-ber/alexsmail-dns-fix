@@ -128,6 +128,8 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # docker builder du
 
 # https://gallery.ecr.aws/lambda/python/
+# docker volume ls -f dangling=true
+# docker volume ls -q -f dangling=true | grep -v '^odysseus' | xargs -r docker volume rm
 # docker system prune --all
 # docker rm -f alexsmail-dns-fix
 # docker rmi -f alexsmail-dns-fix-i
