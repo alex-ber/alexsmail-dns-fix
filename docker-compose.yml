@@ -88,84 +88,6 @@ services:
     # So we don't need to override the `command` here unless you want a specific dev-mode execution.
 
 
-
-
-  # =========================================================
-  # UNIVERSAL POINTER RETRIEVAL DAEMON (Docker Socket Mount)
-  # =========================================================
-  # mise latest uv
-  # 0.11.17
-  # docker compose run --rm get-image-hash ghcr.io/astral-sh/uv:0.11.17
-  # COPY --from=ghcr.io/astral-sh/uv@sha256:abcd... /uv /uvx /bin/
-  # if doesn't found try
-  # mise ls-remote uv
-
-  # Retrieves the latest immutable SHA256 digest for ANY Docker image.
-  # Will be for ghcr.io/astral-sh/uv:latest
-  # Default: docker compose run --rm get-image-hash
-  # Custom:  docker compose run --rm get-image-hash ubuntu:24.04
-  # For debugging: docker compose run --rm --entrypoint sh get-image-hash
-  get-image-hash:
-    image: docker:cli
-    user: "root"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    profiles:
-      - tools
-    # Elegantly intercept arguments. $$ escapes the dollar sign from Compose,
-    # so that bash inside the container receives the actual $1 and and $IMAGE
-    entrypoint:
-      - sh
-      - -c
-      - |
-        IMAGE=$${1:-ghcr.io/astral-sh/uv:latest}
-        echo "[*] Fetching latest digest for: $$IMAGE"
-        docker pull "$$IMAGE" > /dev/null
-        echo ""
-        echo "Update your Dockerfile with this pointer:"
-        docker inspect --format='{{index .RepoDigests 0}}' "$$IMAGE"
-
-    # If you don't pass an argument when running, this will be used
-    command: ["ghcr.io/astral-sh/uv:latest"]
-
-
-  # =========================================================
-  # APT POLICY DAEMON (Package Version Resolver)
-  # =========================================================
-  # Retrieves exact package versions from Ubuntu repositories for hard-pinning.
-
-  # Will be for ca-certificates
-  # Default: docker compose run --rm get-pkg-version
-  # Custom:  docker compose run --rm get-pkg-version nano git
-  # For debugging: docker compose run --rm --entrypoint bash get-pkg-version
-
-  get-pkg-version:
-    # We use the floating tag here because the goal is to discover what's
-    # currently available before locking the SHA in the Dockerfile.
-    image: ubuntu:24.04
-    #image: ubuntu@sha256:c4a8d5503dfb2a3eb8ab5f807da5bc69a85730fb49b5cfca2330194ebcc41c7b
-
-    profiles:
-      - tools
-
-    # We don't need volumes or user mapping here, as it's a pure stateless query.
-    # The entrypoint automatically updates the apt cache quietly, then checks policies.
-    # $$@ expands to all arguments passed after the service name.
-    entrypoint:
-      - sh
-      - -c
-      - |
-        echo "[*] Updating apt repositories quietly..."
-        apt-get update -qq
-        echo ""
-        echo "[*] Available versions for: $$@"
-        apt-cache policy "$$@"
-      - "_" # The dummy $0 argument for sh
-
-    # The default package to query if no arguments are provided
-    command: ["ca-certificates"]
-
-
   # =========================================================
   # STATELESS BIRUR DAEMON (Ephemeral Tools)
   # =========================================================
@@ -177,11 +99,21 @@ services:
 
   update-uv-lock:
     image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+    #image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
     working_dir: /app
 
     # HARDWARE BRIDGE: Identity mapping
     # Crucial: Ensures the newly generated uv.lock belongs to you, not root!
     user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+
+    environment:
+      # Ensure Python prints directly to the terminal without buffering
+      - PYTHONUNBUFFERED=1
+      # Disable bytecode generation at runtime to prevent root-owned .pyc files
+      # from polluting the host filesystem (since they were already compiled AOT)
+      - PYTHONDONTWRITEBYTECODE=1
+      # Tell UV to use /tmp for caching, as it's writable by any user
+      - UV_CACHE_DIR=/tmp/.uv-cache
 
     volumes:
       - .:/app
@@ -194,10 +126,12 @@ services:
     # The exact command you want to execute statelessly
     command: ["uv", "lock"]
 
+
 #docker compose build --no-cache --progress=plain
 #docker compose up
 ##docker compose up -d
-#docker compose down -v
+#docker compose down -v --remove-orphans
+##docker compose down --remove-orphans
 #docker logs -f alexsmail-dns-fix
 
 #Useful checks.

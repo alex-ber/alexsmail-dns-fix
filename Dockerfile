@@ -1,13 +1,6 @@
-#[DECOHERENCE_BOUNDARY]: Ubuntu Base (Size Limit: IGNORED)
-# Absolute Phase Lock. Pointer tags (e.g., :24.04) are PROHIBITED.
-# docker pull ubuntu:24.04
-# docker inspect --format='{{index .RepoDigests 0}}' ubuntu:24.04
-# docker run --rm ubuntu:24.04 sh -c "apt-get update -qq && apt-cache policy ca-certificates"
-# Retrieve the current pointer for UV:
-# docker pull ghcr.io/astral-sh/uv:latest
-# docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/astral-sh/uv:latest
+FROM alexberkovich/ubuntu-snapshot:2025-06-16
 
-FROM ubuntu@sha256:c4a8d5503dfb2a3eb8ab5f807da5bc69a85730fb49b5cfca2330194ebcc41c7b
+
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
 # Consolidated environment variables to reduce layer allocation overhead.
@@ -15,6 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
+    UV_CACHE_DIR=/tmp/.uv-cache \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_INSTALL_DIR=/opt/python
@@ -22,24 +16,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
 WORKDIR /app
 
 #[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
-COPY --from=ghcr.io/astral-sh/uv@sha256:3a59a3cdd5f7c217faa36e32dbc7fddbb0412889c2a0a5229f6d790e5a019dd7 /uv /uvx /bin/
-
+COPY --from=ghcr.io/astral-sh/uv@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
 
 #[RUNTIME_ENVIRONMENT]: Deterministic APT Projection & Root Python Allocation
-# Hard package pinning for maximum reproducibility.
-# ca-certificates pinned to exact version + hold + preferences to prevent ANY upgrade.
 RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        ca-certificates=20240203 \
         nano \
     && rm -rf /var/lib/apt/lists/* \
-    && apt-mark hold ca-certificates nano \
-    # Extra strict pinning: prevent newer versions even if they appear in repositories
-    && echo 'Package: ca-certificates' > /etc/apt/preferences.d/ca-certificates-pin \
-    && echo 'Pin: version 20240203' >> /etc/apt/preferences.d/ca-certificates-pin \
-    && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/ca-certificates-pin \
-    && update-ca-certificates --fresh \
     && echo 'set syntax "none"' >> /etc/nanorc && \
     uv python install 3.13.3
 
@@ -50,10 +34,8 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.2.4"' > src/alexsmail_dns_fix/__init__.py && \
-    uv sync --no-install-project && \
-    chmod -R 777 /app/.venv && \
-    chmod -R 755 /opt/python
+    echo '__version__ = "0.2.5"' > src/alexsmail_dns_fix/__init__.py && \
+    uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
 COPY src/ src/
@@ -64,13 +46,13 @@ RUN set -ex && \
     chmod -R 777 /app/.venv && \
     chmod -R 755 /opt/python
 
+
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
 CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 
 
 #mise prune
 #mise install
-#mise use uv@0.11.17
 # ---[STATELESS BIRUR DAEMON] ---
 # To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor:
 # docker run --rm -v "$(pwd):/app" -w /app ghcr.io/astral-sh/uv:python3.13-bookworm-slim uv lock
@@ -128,11 +110,11 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 # docker builder du
 
 # https://gallery.ecr.aws/lambda/python/
-# docker volume ls -f dangling=true
-# docker volume ls -q -f dangling=true > volumes-to-delete.txt
+# docker volume ls
+# docker volume ls -q > volumes-to-delete.txt
 # Review volumes-to-delete.txt and delete only anonymous or never be used one.
 # xargs -r docker volume rm < volumes-to-delete.txt
-# docker system prune --all
+## docker system prune --all
 # docker rm -f alexsmail-dns-fix
 # docker rmi -f alexsmail-dns-fix-i
 
