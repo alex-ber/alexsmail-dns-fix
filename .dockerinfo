@@ -1,14 +1,17 @@
 # ----------------------------------
-# Git / CI (never in image)
+# Git / CI / Local Tooling
 # ----------------------------------
 .git
 .gitignore
 .github
+.devcontainer/
+*docker-compose*
+Makefile
 
 # ----------------------------------
 # Python artifacts
 # ----------------------------------
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -23,6 +26,7 @@ venv*
 env/
 ENV/
 virtualenv/
+**/node_modules/
 
 # ----------------------------------
 # Secrets (CRITICAL)
@@ -30,14 +34,26 @@ virtualenv/
 .secrets/
 credentials.json
 *.pem
+*.key
+*.p12
+*.pfx
+*.crt
 
 # ----------------------------------
-# IDE / OS
+# IDE / OS / AI Tools
 # ----------------------------------
 .idea/
 *.kdev4
 .vscode/
+.zed/
+.fleet/
+.cursor/
+.cursorrules
+.claude/
+.cline/
 .DS_Store
+Thumbs.db
+ehthumbs.db
 *~
 *.swp
 *.swo
@@ -53,13 +69,17 @@ dist/
 *.tar.gz
 
 # ----------------------------------
-# Test artifacts
+# Test artifacts & Tooling Caches
 # ----------------------------------
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
 .coverage
 htmlcov/
 .tox/
+.nox/
+.pre-commit-config.yaml
+.pre-commit-cache/
 
 # ----------------------------------
 # Runtime / data

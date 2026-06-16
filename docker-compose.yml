@@ -135,9 +135,9 @@ services:
 #docker logs -f alexsmail-dns-fix
 
 #Useful checks.
-
+#docker compose run --rm --entrypoint bash app
+#docker compose exec app bash
 #docker compose config
-#docker compose exec alexsmail-dns-fix bash
 #docker compose ps
 #See all logs
 #docker compose logs -f
