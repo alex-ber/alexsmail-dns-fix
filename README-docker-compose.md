@@ -1,4 +1,6 @@
 ```markdown
+Below are also some Useful `mise` Commands.
+
 # Running Docker Compose Services Sequentially
 
 To force Docker Compose to run services not simultaneously (as it does by default), but **strictly one after another**, you use the `depends_on` block with a special condition: `condition: service_completed_successfully`.
@@ -100,3 +102,12 @@ Then the regular `docker compose up` will only start the server and database, an
 docker compose --profile pipeline up
 ```
 ```
+# Some Useful `mise` Commands
+
+| Command | Description |
+|---------|-------------|
+| `mise tool-alias ls node` | View LTS versions of Node.js. Node supports this feature, uv does not. |
+| `mise latest uv` | Get the latest version of uv. |
+| `mise ls-remote uv` | List all fully supported versions of uv. |
+| `mise ls uv` | Check which version of uv is currently in use and where it is configured. |
+| `mise list` | List all currently installed utilities. |
