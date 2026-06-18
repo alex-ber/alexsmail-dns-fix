@@ -132,3 +132,5 @@ _scratch/
 # (Example: Always allow curated docs media)
 # !docs/**/*.png
 # !docs/**/*.jpg
+
+src/alexsmail_dns_fix/__init__.py

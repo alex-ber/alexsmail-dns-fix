@@ -99,3 +99,5 @@ docs/
 # Keep Dockerfile
 # ----------------------------------
 !Dockerfile
+
+src/alexsmail_dns_fix/__init__.py
