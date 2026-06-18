@@ -44,7 +44,8 @@ COPY src/ src/
 RUN set -ex && \
     uv sync && \
     chmod -R 777 /app/.venv && \
-    chmod -R 755 /opt/python
+    chmod -R 755 /opt/python && \
+    chmod -R 777 /tmp/.uv-cache
 
 
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
