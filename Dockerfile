@@ -1,4 +1,4 @@
-FROM alexberkovich/ubuntu-snapshot:2025-06-16
+FROM alexberkovich/ubuntu2404-snapshot:2025-06-16
 
 
 
