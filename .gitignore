@@ -49,7 +49,7 @@ credentials.json
 # IDE / OS noise & AI Tools
 # ----------------------------------
 .idea/
-.vscode/
+#.vscode/
 *.kdev4
 .aider*
 .claude/

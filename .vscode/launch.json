@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Debug DNS Fix",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.alexsmail_dns_fix.dns_fix",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}

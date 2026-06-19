@@ -22,7 +22,7 @@ COPY --from=ghcr.io/astral-sh/uv@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9
 RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        nano \
+    nano \
     && rm -rf /var/lib/apt/lists/* \
     && echo 'set syntax "none"' >> /etc/nanorc && \
     uv python install 3.13.3
@@ -50,6 +50,7 @@ RUN set -ex && \
 
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
 CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
+#CMD ["sleep", "infinity"]
 
 
 #mise prune

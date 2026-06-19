@@ -16,4 +16,3 @@ node = "22"
 _.path = [
   "./.venv/bin"
 ]
-

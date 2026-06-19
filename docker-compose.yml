@@ -44,8 +44,7 @@ services:
       driver: "json-file"
       options:
         max-size: "100m" # Max 100 megabytes per file
-        max-file: "10"   # Keep 10 files max, delete older ones
-
+        max-file: "10" # Keep 10 files max, delete older ones
 
     # ---------------------------------------------------------
     # HARDWARE BRIDGE: Identity mapping
@@ -71,17 +70,24 @@ services:
       - UV_CACHE_DIR=/tmp/.uv-cache
 
     volumes:
+      #- .:/app
+      # Explicitly mount the current directory (.)
       # Transparent mount: Map the bare-metal path directly into the container's WORKDIR.
-      # Because your Dockerfile uses "WORKDIR /app", we map it directly there.
-      - .:/app
+      # This ensures ESLint, Pyright, and Kate Debugger map files 1:1 without path translation.
+      - type: bind
+        source: .
+        target: /app
 
-      # Anonymous volume for the Python virtual environment.
-      # Protects the container's isolated .venv (built by UV) from being
-      # overwritten by the host's bare-metal .venv.
-      - /app/.venv
+      # Named mount to preserve the isolated environment
+      - type: volume
+        source: alexsmail-dns-fix-venv-data
+        target: /app/.venv
 
       # Optional: If your app writes local logs or state files, you can map them securely:
       # - ./logs:/app/logs
+      #- type: bind
+      #  source: ./logs
+      #  target: /app/logs
 
     # The CMD is already perfectly defined in your Dockerfile:
     # CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
@@ -124,14 +130,16 @@ services:
       - tools
 
     # The exact command you want to execute statelessly
-    command: ["uv", "lock"]
+    command: [ "uv", "lock" ]
 
+volumes:
+  alexsmail-dns-fix-venv-data:
 
 #docker compose build --no-cache --progress=plain
 #docker compose up
 ##docker compose up -d
-#docker compose down -v --remove-orphans
-##docker compose down --remove-orphans
+##docker compose down -v --remove-orphans
+#docker compose down --remove-orphans
 #docker logs -f alexsmail-dns-fix
 
 #Useful checks.
