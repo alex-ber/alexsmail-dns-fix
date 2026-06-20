@@ -24,3 +24,6 @@ packages =["src/alexsmail_dns_fix"]
 
 [tool.hatch.version]
 path = "src/alexsmail_dns_fix/__init__.py"
+
+
+#uv pip install google-auth-oauthlib --dry-run

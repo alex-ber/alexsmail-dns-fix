@@ -94,13 +94,14 @@ services:
     # So we don't need to override the `command` here unless you want a specific dev-mode execution.
 
 
+
   # =========================================================
   # STATELESS BIRUR DAEMON (Ephemeral Tools)
   # =========================================================
   # To regenerate uv.lock WITHOUT installing uv on the Host OS.
   # Run this service interactively and it will destroy itself after.
-  # Usage: dc run --rm update-lock
-  # Custom: docker compose run --rm update-uv-lock
+  # Default: docker compose run --rm update-uv-lock
+  # Custom:  docker compose run --rm update-uv-lock nano git
   # For debugging: docker compose run --rm --entrypoint bash update-uv-lock
 
   update-uv-lock:

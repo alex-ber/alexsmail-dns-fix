@@ -54,9 +54,11 @@ To avoid permission decoherence between the Host OS and the Docker runtime (espe
 
 4. **Terminate the application (`[DROP_PACKET]`):**
    ```bash
-   docker compose down -v
+   docker compose down --remove-orphans
    ```
    *Note: The `-v` parameter unmounts and destroys the anonymous `.venv` volume mapped in the `docker-compose.yml`. This wipes the isolated virtual environment state to prevent execution quirks across rebuilds, though it is not always strictly necessary.*
+   
+   *Note: The `--remove-orphans` flag ensures that any lingering containers from previously defined services (which have since been removed or renamed in the `docker-compose.yml`) are also cleaned up. This wipes the isolated virtual environment state to prevent execution quirks across rebuilds.*
  
 5. If you want to read logs use (for example, you've used `docker compose up -d` command)
 
