@@ -5,7 +5,7 @@
 name = "alexsmail-dns-fix"
 dynamic =["version"]
 description = "DNS Resolution and Fix Runtime"
-requires-python = ">=3.13.3"
+requires-python = ">=3.13.14"
 
 # [EXTERNAL_DEPENDENCIES]: Authorized nodes for Google IO
 dependencies =[

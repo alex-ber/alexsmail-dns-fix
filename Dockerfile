@@ -1,5 +1,4 @@
-FROM alexberkovich/ubuntu2404-snapshot:2025-06-16
-
+FROM alexberkovich/ubuntu2404-snapshot:2026-08-06
 
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
@@ -16,7 +15,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
 WORKDIR /app
 
 #[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
-COPY --from=ghcr.io/astral-sh/uv@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
+#https://github.com/astral-sh/uv/pkgs/container/uv/1073952945?tag=0.11.33-python3.12-trixie
+COPY --from=ghcr.io/astral-sh/uv:0.11.33@sha256:77280f2f771df71f90786c314fe1bbc1e023feac652969bbf139c280babf2eb7 /uv /uvx /bin/
+
 
 #[RUNTIME_ENVIRONMENT]: Deterministic APT Projection & Root Python Allocation
 RUN set -ex && \
@@ -25,7 +26,7 @@ RUN set -ex && \
     nano \
     && rm -rf /var/lib/apt/lists/* \
     && echo 'set syntax "none"' >> /etc/nanorc && \
-    uv python install 3.13.3
+    uv python install 3.13.14
 
 #[DEPENDENCY_INJECTION]: Top-Down Directed Acyclic Graph Mount
 COPY pyproject.toml uv.lock ./
@@ -34,7 +35,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.2.5"' > src/alexsmail_dns_fix/__init__.py && \
+    echo '__version__ = "0.2.6"' > src/alexsmail_dns_fix/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -45,14 +46,14 @@ RUN set -ex && \
     uv sync && \
     chmod -R 777 /app/.venv && \
     chmod -R 755 /opt/python && \
-    chmod -R 777 /tmp/.uv-cache #&& \
+    chmod -R 777 /tmp/.uv-cache
     #mkdir -p /app/logs && \
     #chmod -R 777 /app/logs
 
-
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
 CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
-#CMD ["sleep", "infinity"]
+##CMD ["sleep", "infinity"]
+
 
 
 #mise prune
@@ -86,9 +87,9 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.4
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.6
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.2.4
+#docker push alexberkovich/alexsmail-dns-fix:0.2.6
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 
