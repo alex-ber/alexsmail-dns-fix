@@ -1,4 +1,4 @@
-FROM alexberkovich/ubuntu2404-snapshot:2026-08-06
+FROM alexberkovich/ubuntu2404-snapshot:2026-08-12
 
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
@@ -35,7 +35,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.2.6"' > src/alexsmail_dns_fix/__init__.py && \
+    echo '__version__ = "0.2.7"' > src/alexsmail_dns_fix/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -51,7 +51,7 @@ RUN set -ex && \
     #chmod -R 777 /app/logs
 
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
-CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
+CMD ["uv", "run", "python", "-m", "alexsmail_dns_fix.dns_fix"]
 ##CMD ["sleep", "infinity"]
 
 
@@ -82,14 +82,14 @@ CMD ["uv", "run", "python", "-m", "src.alexsmail_dns_fix.dns_fix"]
 #uv cache prune #outdated
 #uv cache clean numpy #If you suspect a specific package is corrupted or you wa>
 #uv sync
-#uv run python -m src.alexsmail_dns_fix.dns_fix
+#uv run python -m alexsmail_dns_fix.dns_fix
 
 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.6
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.7
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.2.6
+#docker push alexberkovich/alexsmail-dns-fix:0.2.7
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 
