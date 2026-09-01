@@ -1,6 +1,3 @@
-# [DEPENDENCY_GRAPH_ALLOCATION]: alexsmail-dns-fix
-# Strict PEP 621 compliance for target environment
-
 [project]
 name = "alexsmail-dns-fix"
 dynamic =["version"]
@@ -26,4 +23,7 @@ packages =["src/alexsmail_dns_fix"]
 path = "src/alexsmail_dns_fix/__init__.py"
 
 
-#uv pip install google-auth-oauthlib --dry-run
+
+#uv pip install structlog --dry-run
+#uv add structlog "uvicorn[standard]" fastapi alex-ber-utils
+#uv tree --package httpx
