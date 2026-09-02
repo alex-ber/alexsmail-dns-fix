@@ -92,7 +92,7 @@ CMD ["uv", "run", "python", "-m", "alexsmail_dns_fix.dns_fix"]
 #docker push alexberkovich/alexsmail-dns-fix:0.2.7
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
-
+##docker system prune --all
 # Delete all containers
 # docker rm -f $(docker ps -a -q)
 
