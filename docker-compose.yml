@@ -68,6 +68,9 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       # Tell UV to use /tmp for caching, as it's writable by any user
       - UV_CACHE_DIR=/tmp/.uv-cache
+      # In Production OS level env win over local .env
+      - IS_ENV_OVERRIDE=False
+
 
     volumes:
       #- .:/app
@@ -140,8 +143,17 @@ volumes:
 #docker compose up
 ##docker compose up -d
 ##docker compose down -v --remove-orphans
+
+##docker compose up
+##docker attach alexsmail-dns-fix
+
+##docker compose down -v --remove-orphans
 #docker compose down --remove-orphans
 #docker logs -f alexsmail-dns-fix
+
+## Run the app with custom arguments
+#docker compose run --rm app --min 10 --max 500 --player-a bot
+#docker compose run --rm app --help
 
 #Useful checks.
 #docker compose run --rm --entrypoint bash app

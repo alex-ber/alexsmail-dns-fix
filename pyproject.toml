@@ -22,6 +22,10 @@ packages =["src/alexsmail_dns_fix"]
 [tool.hatch.version]
 path = "src/alexsmail_dns_fix/__init__.py"
 
+#[dependency-groups]
+#dev = [
+#    "httpx>=0.28.1, <1.0.0",
+#]
 
 
 #uv pip install structlog --dry-run

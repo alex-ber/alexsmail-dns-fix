@@ -58,12 +58,12 @@ CMD ["uv", "run", "python", "-m", "alexsmail_dns_fix.dns_fix"]
 
 #mise prune
 #mise install
-# ---[STATELESS BIRUR DAEMON] ---
-# To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor:
-# docker run --rm -v "$(pwd):/app" -w /app ghcr.io/astral-sh/uv:python3.13-bookworm-slim uv lock
+## ---[STATELESS BIRUR DAEMON] ---
+## To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor:
+## docker run --rm -v "$(pwd):/app" -w /app ghcr.io/astral-sh/uv:python3.13-bookworm-slim uv lock
 
 #docker build --no-cache --progress=plain -t alexsmail-dns-fix-i .
-#docker run -it -p 8080:8080 -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
+#docker run -e IS_ENV_OVERRIDE=True --env-file .env -it -p 8080:8080 -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
 # The --entrypoint /bin/bash flag overrides the default script execution.
 # You get a Linux command line INSIDE the container.
 #docker run -it -p 8080:8080 --entrypoint /bin/bash -v "$(pwd)/.secrets:/app/.secrets" alexsmail-dns-fix-i
