@@ -1,4 +1,4 @@
-FROM alexberkovich/ubuntu2404-snapshot:2026-09-16
+FROM alexberkovich/ubuntu2404-snapshot:2026-10-26
 
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
@@ -16,7 +16,7 @@ WORKDIR /app
 
 #[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
 #https://github.com/astral-sh/uv/pkgs/container/uv/1073952945?tag=0.11.33-python3.12-trixie
-COPY --from=ghcr.io/astral-sh/uv:0.11.33@sha256:77280f2f771df71f90786c314fe1bbc1e023feac652969bbf139c280babf2eb7 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.4@sha256:77280f2f771df71f90786c314fe1bbc1e023feac652969bbf139c280babf2eb7 /uv /uvx /bin/
 
 
 #[RUNTIME_ENVIRONMENT]: Deterministic APT Projection & Root Python Allocation
@@ -35,7 +35,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/alexsmail_dns_fix && \
-    echo '__version__ = "0.2.7"' > src/alexsmail_dns_fix/__init__.py && \
+    echo '__version__ = "0.2.8"' > src/alexsmail_dns_fix/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -87,9 +87,9 @@ CMD ["uv", "run", "python", "-m", "alexsmail_dns_fix.dns_fix"]
 
 
 
-#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.7
+#docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:0.2.8
 #docker tag alexsmail-dns-fix-i alexberkovich/alexsmail-dns-fix:latest
-#docker push alexberkovich/alexsmail-dns-fix:0.2.7
+#docker push alexberkovich/alexsmail-dns-fix:0.2.8
 #docker push alexberkovich/alexsmail-dns-fix:latest
 
 ##docker system prune --all
